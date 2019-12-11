@@ -21,7 +21,7 @@ public class SensorNode {
 	static int 		direction;			// [s]
 	static double 	acceleration[];		// [x-acceleration, y-acceleration, z-acceleration][in g]		
 	
-	public static String serverIP = "192.168.43.192"; 
+	public static String serverIP = "192.168.43.12"; 
 	/* Step 1: Define here the IP address of the server (Laptop)
 	in windows: windows key + R -> cmd -> write ipconfig -> copy IPv4 in the serverIP value
 	*/
