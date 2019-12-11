@@ -48,13 +48,21 @@ public class nodesDataCollection {
         short[] raw = new short[3]; //Each value of the vector represent one direction of the acceleration
         short[] raw_1d = new short[3];
         double[] x_accelerations_s1_raw = new double[lengthOfDatasetRaw];
-        double[] x_accelerations_s2_raw = new double[lengthOfDatasetRaw]; 
+        double[] x_accelerations_s2_raw = new double[lengthOfDatasetRaw];
+        double[] y_accelerations_s1_raw = new double[lengthOfDatasetRaw];
+        double[] y_accelerations_s2_raw = new double[lengthOfDatasetRaw];
+        double[] z_accelerations_s1_raw = new double[lengthOfDatasetRaw];
+        double[] z_accelerations_s2_raw = new double[lengthOfDatasetRaw];
 
         long[] timeinter = new long[lengthOfDatasetRaw];
 
         double[] x_accelerations_s1 = new double[lengthOfDataset];
         double[] x_accelerations_s2 = new double[lengthOfDataset];
-        double[][] x_accelerations = new double[2][lengthOfDataset];
+        double[] y_accelerations_s1 = new double[lengthOfDataset];
+        double[] y_accelerations_s2 = new double[lengthOfDataset];
+        double[] z_accelerations_s1 = new double[lengthOfDataset];
+        double[] z_accelerations_s2 = new double[lengthOfDataset];
+        double[][] accelerations = new double[6][lengthOfDataset];
         
         // sampling as fast as possible
         int aux = 0;        
@@ -62,8 +70,12 @@ public class nodesDataCollection {
         while ( ((System.nanoTime()-t0)/1000000) < secondsMeasuring*1000) {
         	adxl345.readRawAcceleration(raw);
         	adxl345_1d.readRawAcceleration(raw_1d);
-        	x_accelerations_s1_raw[aux] = (double) raw[axis]*scalingFactor;
-        	x_accelerations_s2_raw[aux] = (double) raw_1d[axis]*scalingFactor;
+        	x_accelerations_s1_raw[aux] = (double) raw[0]*scalingFactor;
+        	x_accelerations_s2_raw[aux] = (double) raw_1d[0]*scalingFactor;
+        	y_accelerations_s1_raw[aux] = (double) raw[1]*scalingFactor;
+        	y_accelerations_s2_raw[aux] = (double) raw_1d[1]*scalingFactor;
+        	z_accelerations_s1_raw[aux] = (double) raw[2]*scalingFactor;
+        	z_accelerations_s2_raw[aux] = (double) raw_1d[2]*scalingFactor;
         	timeinter[aux] = System.nanoTime(); 
         	aux = aux+1;
  		}
@@ -72,7 +84,7 @@ public class nodesDataCollection {
         long date=System.currentTimeMillis();
         FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"RawAcc" + Long.toString(date) + ".txt");
 	    for(int k = 0; k < aux; k++){
-	    	writer.write(timeinter[k]+ "\t" + x_accelerations_s1_raw[k] + "\t" +x_accelerations_s2_raw[k] + "\n");
+	    	writer.write(timeinter[k]+ "\t" + x_accelerations_s1_raw[k] + "\t" +x_accelerations_s2_raw[k]+ "\t" + y_accelerations_s1_raw[k] + "\t" +y_accelerations_s2_raw[k]+ "\t" + z_accelerations_s1_raw[k] + "\t" +z_accelerations_s2_raw[k] + "\n");
 	    }
 	    writer.flush();
       	writer.close();
@@ -81,11 +93,19 @@ public class nodesDataCollection {
       	samplingData samplingacc = new samplingData();
       	x_accelerations_s1 = samplingacc.getSamplingData(x_accelerations_s1_raw, timeinter, samplingRate, aux, lengthOfDataset);
       	x_accelerations_s2 = samplingacc.getSamplingData(x_accelerations_s2_raw, timeinter, samplingRate, aux, lengthOfDataset);
+      	y_accelerations_s1 = samplingacc.getSamplingData(y_accelerations_s1_raw, timeinter, samplingRate, aux, lengthOfDataset);
+      	y_accelerations_s2 = samplingacc.getSamplingData(y_accelerations_s2_raw, timeinter, samplingRate, aux, lengthOfDataset);
+      	z_accelerations_s1 = samplingacc.getSamplingData(z_accelerations_s1_raw, timeinter, samplingRate, aux, lengthOfDataset);
+      	z_accelerations_s2 = samplingacc.getSamplingData(z_accelerations_s2_raw, timeinter, samplingRate, aux, lengthOfDataset);
 
       	// Storing data into a matrix
-      	x_accelerations[0]=x_accelerations_s1;
-      	x_accelerations[1]=x_accelerations_s2;
+      	accelerations[0]=x_accelerations_s1;
+      	accelerations[1]=x_accelerations_s2;
+      	accelerations[2]=y_accelerations_s1;
+      	accelerations[3]=y_accelerations_s2;
+      	accelerations[4]=z_accelerations_s1;
+      	accelerations[5]=z_accelerations_s2;
       	
-		return x_accelerations;
+		return accelerations;
 		}	
 }
