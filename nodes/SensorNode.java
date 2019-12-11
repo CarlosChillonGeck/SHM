@@ -50,20 +50,36 @@ public class SensorNode {
         int lengthOfDataset		= samplingRate * secondsMeasuring; //Length of the result vector
         double[] x_accelerations_s1 = new double[lengthOfDataset]; // Sampled Raw acceleration S1
         double[] x_accelerations_s2 = new double[lengthOfDataset]; // Sampled Raw acceleration S2
-        double[][] x_accelerations = new double[2][lengthOfDataset]; // Sampled raw acceleration S1 & S2
+        double[] y_accelerations_s1 = new double[lengthOfDataset]; // Sampled Raw acceleration S1
+        double[] y_accelerations_s2 = new double[lengthOfDataset]; // Sampled Raw acceleration S2
+        double[] z_accelerations_s1 = new double[lengthOfDataset]; // Sampled Raw acceleration S1
+        double[] z_accelerations_s2 = new double[lengthOfDataset]; // Sampled Raw acceleration S2
+        double[][] accelerations = new double[6][lengthOfDataset]; // Sampled raw acceleration S1 & S2
         double[] x_accelerations_s1_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S1
         double[] x_accelerations_s2_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S2
+        double[] y_accelerations_s1_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S1
+        double[] y_accelerations_s2_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S2
+        double[] z_accelerations_s1_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S1
+        double[] z_accelerations_s2_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S2
         
         // Collecting data from sensors (raw collected data will be stored in the RPI, folder ./Data/)
         nodesDataCollection getAccData = new nodesDataCollection();
-        x_accelerations = getAccData.getDataCollection(secondsMeasuring, samplingRate, direction);
-        x_accelerations_s1 = x_accelerations[0];
-        x_accelerations_s2 = x_accelerations[1];
+        accelerations = getAccData.getDataCollection(secondsMeasuring, samplingRate, direction);
+        x_accelerations_s1 = accelerations[0];
+        x_accelerations_s2 = accelerations[1];
+        y_accelerations_s1 = accelerations[0];
+        y_accelerations_s2 = accelerations[1];
+        z_accelerations_s1 = accelerations[0];
+        z_accelerations_s2 = accelerations[1];
 
         // Removing offset by subtracting the mean value, i.e. baseline correction
     	baseLineCorrection base=new baseLineCorrection();
     	x_accelerations_s1_bl = base.getBaseLineCorrection(x_accelerations_s1);
     	x_accelerations_s2_bl = base.getBaseLineCorrection(x_accelerations_s2);
+    	y_accelerations_s1_bl = base.getBaseLineCorrection(y_accelerations_s1);
+    	y_accelerations_s2_bl = base.getBaseLineCorrection(y_accelerations_s2);
+    	z_accelerations_s1_bl = base.getBaseLineCorrection(z_accelerations_s1);
+    	z_accelerations_s2_bl = base.getBaseLineCorrection(z_accelerations_s2);
         
     	// Extending length of vector to a power of 2 (due to FFT)
     	powerOf2Extension extendedVector = new powerOf2Extension();
