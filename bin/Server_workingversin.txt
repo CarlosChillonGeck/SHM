@@ -1,0 +1,124 @@
+import java.net.Socket;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+
+/* This part of the code runs into the server (laptop)
+The step for running the software properly are written along the code
+lines: 21, 
+*/
+public class Server {
+	
+	private static String rawDataPath = "./Results/";
+
+	@SuppressWarnings("unused")
+	public static void main(String args[]) throws IOException, ClassNotFoundException{		
+
+		// Step 1: define input parameters (Pay attention to number the of nodes)
+		// ===== Input Parameters ======= //
+		int secondsmeasuring = 40; //best value is a power of 2, i.e. 2^n        
+		int samplingFrequency = 125; // Hz (Divisor of 1000, i.e. 25, 50, 100, 125, 200, and 250) higher are not possible
+		int numberOfNodes = 1; // sensor nodes to be used
+		int numberOfPeaks = 4; // expected peaks from the analysis
+		// ============================== //
+		
+		int lengthOfDataset = samplingFrequency * secondsmeasuring;
+		double[][] BLAccelerationData = new double[numberOfNodes][lengthOfDataset];
+		double[][] BLAccelerationData2 = new double[numberOfNodes][lengthOfDataset];
+		        
+        System.out.println("Server is running and waiting for connection");
+
+        ServerSocket 		ss[]	= new ServerSocket[numberOfNodes];
+        Socket 				s[]		= new Socket[numberOfNodes];
+        DataOutputStream 	OUT[] 	= new DataOutputStream[numberOfNodes];
+        DataInputStream 	IN[] 	= new DataInputStream[numberOfNodes];
+        
+        for(int node = 0; node < numberOfNodes; node++){
+        	int numberConn = 1234+node;
+        	System.out.println("Connecting node " + numberConn );
+        	ss[node] = new ServerSocket(numberConn);
+    		s[node] = ss[node].accept();
+            OUT[node] 	= new DataOutputStream	(s[node].getOutputStream());
+            IN[node] 	= new DataInputStream	(s[node].getInputStream());
+        	System.out.println("Node " + numberConn + " connected" );    
+        }		
+        
+        //sending data to the sensor nodes
+        for(int node = 0; node < numberOfNodes; node++){
+    		OUT[node].writeInt(samplingFrequency);
+    		OUT[node].writeInt(numberOfPeaks);
+    		OUT[node].writeInt(secondsmeasuring);
+            OUT[node].flush();
+      	    }      
+
+        double[][]	detFrequencies	= new double[numberOfNodes][numberOfPeaks];
+        double[][]	detFrequencies2	= new double[numberOfNodes][numberOfPeaks];
+        
+        System.out.println("\nsetup parameters transmitted\n"
+        		+ "--------------------");
+
+        for(int node = 0; node < numberOfNodes; node++){
+        	System.out.println("Waiting acceleration data from node  " + (node + 1));
+            for(int i = 0; i < lengthOfDataset; i++){
+            	BLAccelerationData[node][i] = IN[node].readDouble(); // reading Acc. data from the nodes
+            	BLAccelerationData2[node][i] = IN[node].readDouble();
+	        	}
+            System.out.println("================ Acceleration data node  " + (node + 1) + " received ================= ");
+        	}
+        
+        for(int node = 0; node < numberOfNodes; node++){
+        	System.out.println("Waiting frequencies from node  " + (node + 1));
+	        for(int i = 0; i < numberOfPeaks; i++){
+	        	System.out.println("Frequency  " + (i + 1));
+	        	detFrequencies[node][i] = IN[node].readDouble(); // reading Acc. data from the nodes
+	        	detFrequencies2[node][i] = IN[node].readDouble();
+	        	}
+        }
+        
+        long date=System.currentTimeMillis();
+      	FileWriter writer = new FileWriter(rawDataPath + Long.toString(date) + "_Acc.txt");
+      	
+      	for(int node = 0; node < numberOfNodes; node++){
+	      	for(int k = 0; k < lengthOfDataset; k++){
+	      		writer.write(BLAccelerationData[node][k]  + "	");
+	      		writer.write(BLAccelerationData2[node][k]  + "\n");      		
+	      	    }
+      	writer.write("\n \n \n");
+      	}
+      	
+      	for(int node = 0; node < numberOfNodes; node++){
+	      	for(int k = 0; k < numberOfPeaks; k++){
+	        	detFrequencies[node][k]=detFrequencies[node][k]*samplingFrequency/lengthOfDataset;
+	        	detFrequencies2[node][k]=detFrequencies2[node][k]*samplingFrequency/lengthOfDataset;
+	      		writer.write(detFrequencies[node][k]  + "	");
+	      		writer.write(detFrequencies2[node][k]  + "\n");      		
+	      	    }
+      	writer.write("\n \n \n");
+      	}
+      	
+      	writer.flush();
+      	writer.close();
+        
+        System.out.println("\nAcceleration-data written into " + rawDataPath);
+        System.out.print("\nReceived Frequencies: \n" );
+
+      	for(int node = 0; node < numberOfNodes; node++){
+      		System.out.println("\nSensor Node " + (node + 1) );
+      		System.out.println("\tSensor 1\tSensor 2");
+	        for (int i = 0; i < numberOfPeaks; i++) {
+	        	System.out.print("Peak " + (i+1) + "\t" + detFrequencies[node][i] + "\t\t");
+				System.out.println(detFrequencies2[node][i]);
+			}
+      	}
+     
+        for(int node = 0; node < numberOfNodes; node++){
+        	IN[node].close();
+            OUT[node].close();
+            ss[node].close(); 
+      	    }
+  
+	}
+
+}

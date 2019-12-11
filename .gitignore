@@ -1,0 +1,11 @@
+.idea/
+shm-rpi.iml
+*.class
+# *.classpath
+# *.project
+# *.settings
+
+*.log
+
+
+
