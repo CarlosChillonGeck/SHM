@@ -125,7 +125,11 @@ public class SensorNode {
     	for (int i = 0; i < lengthOfDataset; i++) {
     		//System.out.println("sending" + i + x_accelerations_s1_bl[i]);
     		out.writeDouble(x_accelerations_s1_bl[i]);	
+    		out.writeDouble(y_accelerations_s1_bl[i]);
+    		out.writeDouble(z_accelerations_s1_bl[i]);	
     		out.writeDouble(x_accelerations_s2_bl[i]);
+    		out.writeDouble(y_accelerations_s2_bl[i]);	
+    		out.writeDouble(z_accelerations_s2_bl[i]);
     		out.flush();
 		}
     	    	

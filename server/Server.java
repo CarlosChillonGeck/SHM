@@ -30,8 +30,8 @@ public class Server {
 		
 		// Variables related with the acceleration data
 		int lengthOfDataset = samplingFrequency * secondsmeasuring;
-		double[][] BLAccelerationData = new double[numberOfNodes][lengthOfDataset];
-		double[][] BLAccelerationData2 = new double[numberOfNodes][lengthOfDataset];
+		double[][] BLAccelerationData = new double[3][lengthOfDataset];
+		double[][] BLAccelerationData2 = new double[3][lengthOfDataset];
         double[][]	detFrequencies	= new double[numberOfNodes][numberOfPeaks];
         double[][]	detFrequencies2	= new double[numberOfNodes][numberOfPeaks];		
 
@@ -78,8 +78,12 @@ public class Server {
         for(int node = 0; node < numberOfNodes; node++){
         	System.out.println("Waiting acceleration data from node  " + (node + 1));
             for(int i = 0; i < lengthOfDataset; i++){
-            	BLAccelerationData[node][i] = IN[node].readDouble(); // reading Acc. data from the nodes
-            	BLAccelerationData2[node][i] = IN[node].readDouble();
+            	BLAccelerationData[0][i] = IN[node].readDouble(); // reading Acc. data from the nodes
+            	BLAccelerationData[1][i] = IN[node].readDouble();
+            	BLAccelerationData[2][i] = IN[node].readDouble();
+            	BLAccelerationData2[0][i] = IN[node].readDouble();
+            	BLAccelerationData2[1][i] = IN[node].readDouble();
+            	BLAccelerationData2[2][i] = IN[node].readDouble();
 	        	}
             System.out.println("================ Acceleration data node  " + (node + 1) + " received ================= ");
         	}
@@ -98,10 +102,23 @@ public class Server {
         long date=System.currentTimeMillis();
       	FileWriter writer = new FileWriter(rawDataPath + Long.toString(date) + "_Acc.txt");
       	
+      	writer.write("Sensor 1_X ");
+      	writer.write("Sensor 1_Y ");
+      	writer.write("Sensor 1_Z");
+      	writer.write("\t");
+      	writer.write("Sensor 2_X ");
+      	writer.write("Sensor 2_Y ");
+      	writer.write("Sensor 2_Z ");
+      	writer.write("\n");
+      			
       	for(int node = 0; node < numberOfNodes; node++){
 	      	for(int k = 0; k < lengthOfDataset; k++){
-	      		writer.write(BLAccelerationData[node][k]  + "	");
-	      		writer.write(BLAccelerationData2[node][k]  + "\n");      		
+	      		writer.write(BLAccelerationData[0][k]  + "	");
+	      		writer.write(BLAccelerationData[1][k]  + "	");
+	      		writer.write(BLAccelerationData[1][k]  + "\t");
+	      		writer.write(BLAccelerationData2[0][k]  + "	");
+	      		writer.write(BLAccelerationData2[1][k]  + "	");
+	      		writer.write(BLAccelerationData2[2][k]  + "\n");      		
 	      	    }
       	writer.write("\n \n \n");
       	}
