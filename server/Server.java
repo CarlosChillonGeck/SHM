@@ -84,6 +84,7 @@ public class Server {
             	BLAccelerationData2[0][i] = IN[node].readDouble();
             	BLAccelerationData2[1][i] = IN[node].readDouble();
             	BLAccelerationData2[2][i] = IN[node].readDouble();
+            	if(i % 20 == 0) System.out.println(i+1 + "/" + lengthOfDataset);
 	        	}
             System.out.println("================ Acceleration data node  " + (node + 1) + " received ================= ");
         	}
@@ -100,24 +101,23 @@ public class Server {
         
         // Storing data into a file in ./Results/
         long date=System.currentTimeMillis();
-      	FileWriter writer = new FileWriter(rawDataPath + Long.toString(date) + "_Acc.txt");
+      	FileWriter writer = new FileWriter(rawDataPath + Long.toString(date) + "_Acc.csv");
       	
-      	writer.write("Sensor 1_X ");
-      	writer.write("Sensor 1_Y ");
-      	writer.write("Sensor 1_Z");
-      	writer.write("\t");
-      	writer.write("Sensor 2_X ");
-      	writer.write("Sensor 2_Y ");
-      	writer.write("Sensor 2_Z ");
+      	writer.write("Sensor 1_X,");
+      	writer.write("Sensor 1_Y,");
+      	writer.write("Sensor 1_Z,");
+      	writer.write("Sensor 2_X,");
+      	writer.write("Sensor 2_Y,");
+      	writer.write("Sensor 2_Z,");
       	writer.write("\n");
       			
       	for(int node = 0; node < numberOfNodes; node++){
 	      	for(int k = 0; k < lengthOfDataset; k++){
-	      		writer.write(BLAccelerationData[0][k]  + "	");
-	      		writer.write(BLAccelerationData[1][k]  + "	");
-	      		writer.write(BLAccelerationData[1][k]  + "\t");
-	      		writer.write(BLAccelerationData2[0][k]  + "	");
-	      		writer.write(BLAccelerationData2[1][k]  + "	");
+	      		writer.write(BLAccelerationData[0][k]  + ",");
+	      		writer.write(BLAccelerationData[1][k]  + ",");
+	      		writer.write(BLAccelerationData[2][k]  + ",");
+	      		writer.write(BLAccelerationData2[0][k]  + ",");
+	      		writer.write(BLAccelerationData2[1][k]  + ",");
 	      		writer.write(BLAccelerationData2[2][k]  + "\n");      		
 	      	    }
       	writer.write("\n \n \n");
