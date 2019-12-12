@@ -55,6 +55,7 @@ public class nodesDataCollection {
         double[] z_accelerations_s2_raw = new double[lengthOfDatasetRaw];
 
         long[] timeinter = new long[lengthOfDatasetRaw];
+        double timestep = (1000/(double)samplingRate);
 
         double[] x_accelerations_s1 = new double[lengthOfDataset];
         double[] x_accelerations_s2 = new double[lengthOfDataset];
@@ -62,7 +63,7 @@ public class nodesDataCollection {
         double[] y_accelerations_s2 = new double[lengthOfDataset];
         double[] z_accelerations_s1 = new double[lengthOfDataset];
         double[] z_accelerations_s2 = new double[lengthOfDataset];
-        double[][] accelerations = new double[6][lengthOfDataset];
+        double[][] accelerations = new double[7][lengthOfDataset];
         
         // sampling as fast as possible
         int aux = 0;        
@@ -89,6 +90,10 @@ public class nodesDataCollection {
 	    writer.flush();
       	writer.close();
       	
+      	for (int i = 0; i < lengthOfDataset; i++) {
+      		accelerations[0][i] = timestep * i;
+      	}
+      	
       	// Re-sampling data to a defined sampling frequency
       	samplingData samplingacc = new samplingData();
       	x_accelerations_s1 = samplingacc.getSamplingData(x_accelerations_s1_raw, timeinter, samplingRate, aux, lengthOfDataset);
@@ -99,12 +104,12 @@ public class nodesDataCollection {
       	z_accelerations_s2 = samplingacc.getSamplingData(z_accelerations_s2_raw, timeinter, samplingRate, aux, lengthOfDataset);
 
       	// Storing data into a matrix
-      	accelerations[0]=x_accelerations_s1;
-      	accelerations[1]=x_accelerations_s2;
-      	accelerations[2]=y_accelerations_s1;
-      	accelerations[3]=y_accelerations_s2;
-      	accelerations[4]=z_accelerations_s1;
-      	accelerations[5]=z_accelerations_s2;
+      	accelerations[1]=x_accelerations_s1;
+      	accelerations[2]=x_accelerations_s2;
+      	accelerations[3]=y_accelerations_s1;
+      	accelerations[4]=y_accelerations_s2;
+      	accelerations[5]=z_accelerations_s1;
+      	accelerations[6]=z_accelerations_s2;
       	
 		return accelerations;
 		}	

@@ -30,6 +30,7 @@ public class Server {
 		
 		// Variables related with the acceleration data
 		int lengthOfDataset = samplingFrequency * secondsmeasuring;
+		double timeStamp[] = new double[lengthOfDataset]; // Time Stamp
 		double[][] BLAccelerationData = new double[3][lengthOfDataset];
 		double[][] BLAccelerationData2 = new double[3][lengthOfDataset];
         double[][]	detFrequencies	= new double[numberOfNodes][numberOfPeaks];
@@ -78,6 +79,7 @@ public class Server {
         for(int node = 0; node < numberOfNodes; node++){
         	System.out.println("Waiting acceleration data from node  " + (node + 1));
             for(int i = 0; i < lengthOfDataset; i++){
+            	timeStamp[i] = IN[node].readDouble();
             	BLAccelerationData[0][i] = IN[node].readDouble(); // reading Acc. data from the nodes
             	BLAccelerationData[1][i] = IN[node].readDouble();
             	BLAccelerationData[2][i] = IN[node].readDouble();
@@ -102,7 +104,7 @@ public class Server {
         // Storing data into a file in ./Results/
         long date=System.currentTimeMillis();
       	FileWriter writer = new FileWriter(rawDataPath + Long.toString(date) + "_Acc.csv");
-      	
+      	writer.write("Time Stamp,");
       	writer.write("Sensor 1_X,");
       	writer.write("Sensor 1_Y,");
       	writer.write("Sensor 1_Z,");
@@ -113,6 +115,7 @@ public class Server {
       			
       	for(int node = 0; node < numberOfNodes; node++){
 	      	for(int k = 0; k < lengthOfDataset; k++){
+	      		writer.write(timeStamp[k]  + ",");
 	      		writer.write(BLAccelerationData[0][k]  + ",");
 	      		writer.write(BLAccelerationData[1][k]  + ",");
 	      		writer.write(BLAccelerationData[2][k]  + ",");

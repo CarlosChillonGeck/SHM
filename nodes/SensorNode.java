@@ -21,7 +21,7 @@ public class SensorNode {
 	static int 		direction;			// [s]
 	static double 	acceleration[];		// [x-acceleration, y-acceleration, z-acceleration][in g]		
 	
-	public static String serverIP = "192.168.43.12"; 
+	public static String serverIP = "192.168.137.1"; 
 	/* Step 1: Define here the IP address of the server (Laptop)
 	in windows: windows key + R -> cmd -> write ipconfig -> copy IPv4 in the serverIP value
 	*/
@@ -54,7 +54,8 @@ public class SensorNode {
         double[] y_accelerations_s2 = new double[lengthOfDataset]; // Sampled Raw acceleration S2
         double[] z_accelerations_s1 = new double[lengthOfDataset]; // Sampled Raw acceleration S1
         double[] z_accelerations_s2 = new double[lengthOfDataset]; // Sampled Raw acceleration S2
-        double[][] accelerations = new double[6][lengthOfDataset]; // Sampled raw acceleration S1 & S2
+        double[][] accelerations = new double[7][lengthOfDataset]; // Sampled raw acceleration S1 & S2
+        double[] timeStamp = new double[lengthOfDataset]; // Time Stamp
         double[] x_accelerations_s1_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S1
         double[] x_accelerations_s2_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S2
         double[] y_accelerations_s1_bl = new double[lengthOfDataset]; // Sampled corrected acceleration S1
@@ -65,15 +66,16 @@ public class SensorNode {
         // Collecting data from sensors (raw collected data will be stored in the RPI, folder ./Data/)
         nodesDataCollection getAccData = new nodesDataCollection();
         accelerations = getAccData.getDataCollection(secondsMeasuring, samplingRate, direction);
-        x_accelerations_s1 = accelerations[0];
-        x_accelerations_s2 = accelerations[1];
-        y_accelerations_s1 = accelerations[0];
-        y_accelerations_s2 = accelerations[1];
-        z_accelerations_s1 = accelerations[0];
-        z_accelerations_s2 = accelerations[1];
+        x_accelerations_s1 = accelerations[1];
+        x_accelerations_s2 = accelerations[2];
+        y_accelerations_s1 = accelerations[3];
+        y_accelerations_s2 = accelerations[4];
+        z_accelerations_s1 = accelerations[5];
+        z_accelerations_s2 = accelerations[6];
 
         // Removing offset by subtracting the mean value, i.e. baseline correction
     	baseLineCorrection base=new baseLineCorrection();
+    	timeStamp = accelerations[0];
     	x_accelerations_s1_bl = base.getBaseLineCorrection(x_accelerations_s1);
     	x_accelerations_s2_bl = base.getBaseLineCorrection(x_accelerations_s2);
     	y_accelerations_s1_bl = base.getBaseLineCorrection(y_accelerations_s1);
@@ -124,6 +126,7 @@ public class SensorNode {
         // transmitting acceleration-data to the server
     	for (int i = 0; i < lengthOfDataset; i++) {
     		//System.out.println("sending" + i + x_accelerations_s1_bl[i]);
+    		out.writeDouble(timeStamp[i]);	
     		out.writeDouble(x_accelerations_s1_bl[i]);	
     		out.writeDouble(y_accelerations_s1_bl[i]);
     		out.writeDouble(z_accelerations_s1_bl[i]);	
