@@ -81,14 +81,14 @@ public class nodesDataCollection {
         	aux = aux+1;
  		}
         
-        // Storing Data in RPI - not necessary in real implementations
-        long date=System.currentTimeMillis();
-        FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"RawAcc" + Long.toString(date) + ".txt");
-	    for(int k = 0; k < aux; k++){
-	    	writer.write(timeinter[k]+ "\t" + x_accelerations_s1_raw[k] + "\t" +x_accelerations_s2_raw[k]+ "\t" + y_accelerations_s1_raw[k] + "\t" +y_accelerations_s2_raw[k]+ "\t" + z_accelerations_s1_raw[k] + "\t" +z_accelerations_s2_raw[k] + "\n");
-	    }
-	    writer.flush();
-      	writer.close();
+//        // Storing Data in RPI - not necessary in real implementations
+//        long date=System.currentTimeMillis();
+//        FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"RawAcc" + Long.toString(date) + ".txt");
+//	    for(int k = 0; k < aux; k++){
+//	    	writer.write(timeinter[k]+ "\t" + x_accelerations_s1_raw[k] + "\t" +x_accelerations_s2_raw[k]+ "\t" + y_accelerations_s1_raw[k] + "\t" +y_accelerations_s2_raw[k]+ "\t" + z_accelerations_s1_raw[k] + "\t" +z_accelerations_s2_raw[k] + "\n");
+//	    }
+//	    writer.flush();
+//      	writer.close();
       	
       	for (int i = 0; i < lengthOfDataset; i++) {
       		accelerations[0][i] = timestep * i;

@@ -78,7 +78,10 @@ public class Server {
             OUT[node].flush();
             Thread.sleep(waitingTime0);
         }
-         
+        
+        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
+		dbAccess.clear(DB_NAME);
+		
         System.out.println("\nInput parameters transmitted\n"
         		+ "--------------------");
         
@@ -92,9 +95,21 @@ public class Server {
             	BLAccelerationData[0][i] = IN[node].readDouble(); // reading Acc. data from the nodes
             	BLAccelerationData[1][i] = IN[node].readDouble();
             	BLAccelerationData[2][i] = IN[node].readDouble();
+            	
+            	double[] data = {1, timeStamp[i], BLAccelerationData[0][i], BLAccelerationData[1][i],BLAccelerationData[2][i]};
+    			dataFormat dataSet = new dataFormat(data);
+    			// write incoming data into database using DBAccess class
+    			dbAccess.insertData(dataSet, DB_NAME);
+    			
             	BLAccelerationData2[0][i] = IN[node].readDouble();
             	BLAccelerationData2[1][i] = IN[node].readDouble();
             	BLAccelerationData2[2][i] = IN[node].readDouble();
+            	
+            	double[] data2 = {2, timeStamp[i], BLAccelerationData2[0][i], BLAccelerationData2[1][i],BLAccelerationData2[2][i]};
+    			dataFormat dataSet2 = new dataFormat(data2);
+    			// write incoming data into database using DBAccess class
+    			dbAccess.insertData(dataSet2, DB_NAME);
+    			
             	if(i % 20 == 0) System.out.println(i+1 + "/" + lengthOfDataset);
 	        	}
             System.out.println("================ Acceleration data node  " + (node + 1) + " received ================= ");
@@ -165,20 +180,7 @@ public class Server {
             ss[node].close(); 
       	    }
         
-        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
-		dbAccess.clear(DB_NAME);
-		
-		for(int i=0; i<lengthOfDataset; i++) {
-			double[] data = {1, timeStamp[i], BLAccelerationData[0][i], BLAccelerationData[1][i],BLAccelerationData[2][i]};
-			dataFormat dataSet = new dataFormat(data);
-			// write incoming data into database using DBAccess class
-			dbAccess.insertData(dataSet, DB_NAME);
-			
-			double[] data2 = {2, timeStamp[i], BLAccelerationData2[0][i], BLAccelerationData2[1][i],BLAccelerationData2[2][i]};
-			dataFormat dataSet2 = new dataFormat(data2);
-			// write incoming data into database using DBAccess class
-			dbAccess.insertData(dataSet2, DB_NAME);
-		}
+        
 	}
 
 }
