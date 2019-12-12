@@ -5,6 +5,7 @@ import java.net.ServerSocket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 
+
 /* This part of the code runs into the server (laptop)
 The step for running the software properly are written along the code
 see lines: 22, 
@@ -15,10 +16,18 @@ with the name of the current time in milliseconds
 public class Server {
 	
 	private static String rawDataPath = "./Results/";
+	
+//	public static final String DB_URL = "jdbc:mysql://localhost/accelerometer";
+//	public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+//	// always check if the right driver is installed!
+//	public static final String DB_NAME = "accelerometer";
+//	// different parameter for the database
+	
 
 	@SuppressWarnings("unused")
 	public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException{		
-
+		
+		
 		// Step 1: define input parameters (Pay attention to number the of nodes)
 		// ===== Input Parameters ==========//
 		int secondsmeasuring = 30;			// [s]        
@@ -155,7 +164,21 @@ public class Server {
             OUT[node].close();
             ss[node].close(); 
       	    }
-  
+        
+//        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
+//		dbAccess.clear(DB_NAME);
+//		
+//		for(int i=0; i<lengthOfDataset; i++) {
+//			double[] data = {1, timeStamp[i], BLAccelerationData[0][i], BLAccelerationData[1][i],BLAccelerationData[2][i]};
+//			dataFormat dataSet = new dataFormat(data);
+//			// write incoming data into database using DBAccess class
+//			dbAccess.insertData(dataSet, DB_NAME);
+//			
+//			double[] data2 = {2, timeStamp[i], BLAccelerationData2[0][i], BLAccelerationData2[1][i],BLAccelerationData2[2][i]};
+//			dataFormat dataSet2 = new dataFormat(data2);
+//			// write incoming data into database using DBAccess class
+//			dbAccess.insertData(dataSet2, DB_NAME);
+//		}
 	}
 
 }
