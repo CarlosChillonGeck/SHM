@@ -17,11 +17,11 @@ public class Server {
 	
 	private static String rawDataPath = "./Results/";
 	
-//	public static final String DB_URL = "jdbc:mysql://localhost/accelerometer";
-//	public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-//	// always check if the right driver is installed!
-//	public static final String DB_NAME = "accelerometer";
-//	// different parameter for the database
+	public static final String DB_URL = "jdbc:mysql://localhost/accelerometer";
+	public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+	// always check if the right driver is installed!
+	public static final String DB_NAME = "data";
+	// different parameter for the database
 	
 
 	@SuppressWarnings("unused")
@@ -165,20 +165,20 @@ public class Server {
             ss[node].close(); 
       	    }
         
-//        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
-//		dbAccess.clear(DB_NAME);
-//		
-//		for(int i=0; i<lengthOfDataset; i++) {
-//			double[] data = {1, timeStamp[i], BLAccelerationData[0][i], BLAccelerationData[1][i],BLAccelerationData[2][i]};
-//			dataFormat dataSet = new dataFormat(data);
-//			// write incoming data into database using DBAccess class
-//			dbAccess.insertData(dataSet, DB_NAME);
-//			
-//			double[] data2 = {2, timeStamp[i], BLAccelerationData2[0][i], BLAccelerationData2[1][i],BLAccelerationData2[2][i]};
-//			dataFormat dataSet2 = new dataFormat(data2);
-//			// write incoming data into database using DBAccess class
-//			dbAccess.insertData(dataSet2, DB_NAME);
-//		}
+        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
+		dbAccess.clear(DB_NAME);
+		
+		for(int i=0; i<lengthOfDataset; i++) {
+			double[] data = {1, timeStamp[i], BLAccelerationData[0][i], BLAccelerationData[1][i],BLAccelerationData[2][i]};
+			dataFormat dataSet = new dataFormat(data);
+			// write incoming data into database using DBAccess class
+			dbAccess.insertData(dataSet, DB_NAME);
+			
+			double[] data2 = {2, timeStamp[i], BLAccelerationData2[0][i], BLAccelerationData2[1][i],BLAccelerationData2[2][i]};
+			dataFormat dataSet2 = new dataFormat(data2);
+			// write incoming data into database using DBAccess class
+			dbAccess.insertData(dataSet2, DB_NAME);
+		}
 	}
 
 }
