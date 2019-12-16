@@ -61,5 +61,5 @@ You should see site as below:
 
 #### Click at my PHP admin at top right corner
 
-![localhost] (images/image3.jpeg)
+![localhost](images/image3.jpeg)
 
