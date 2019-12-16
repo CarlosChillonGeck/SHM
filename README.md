@@ -55,7 +55,7 @@ Normally the progmme folder will store under your C:\, direct to C:\xampp and la
 
 While openning xampp, go any browser(eg. Internet Explorer/ Google Chrome..) 
 
-[xampp-remote]: http://localhost/dashboard/
+#### xampp-remote link: http://localhost/dashboard/
 
 You should see site as below:
 
@@ -63,3 +63,13 @@ You should see site as below:
 
 ![localhost](images/image3.jpeg)
 
+#### Build SQL database 
+1. Build a new database named "accelerometer"
+2. Build a table under database named "data"
+
+as shown below:
+![database](images/image4.jpeg)
+
+Under the table, build column name as shown:
+
+![database 2](images/image5.jpeg)
