@@ -1,7 +1,7 @@
 # SHM WS 2019
 
 ## Data fetching structure
-
+### Note: Database should be build before execute java programme.
 ```
 shm-rpi
 │ README.md
@@ -73,3 +73,12 @@ as shown below:
 Under the table, build column name as shown:
 
 ![database 2](images/image5.jpeg)
+
+## Visualise the data
+
+Copy all files under [`Xampp/`](Xampp/) into C:\xampp\htdocs\website as shown:
+
+
+![html file](images/image6.jpeg)
+
+#### Finally, launch test.htm 
