@@ -79,6 +79,6 @@ Under the table, build column name as shown:
 Copy all files under [`Xampp/`](Xampp/) into C:\xampp\htdocs\website as shown:
 
 
-![html file](images/image6.jpeg)
+![html file](images/image6.jpg)
 
 #### Finally, launch test.htm 
