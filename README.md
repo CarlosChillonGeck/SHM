@@ -43,9 +43,11 @@ Download Xampp programme from https://www.apachefriends.org/download.html accord
 
 Normally the progmme folder will store under your C:\, direct to C:\xampp and launch the programme
 
-Search for xampp-control.exe
+#### Search for xampp-control.exe
 
 ![Programme Launch](images/image1.jpeg)
+
+#### Turn on Apache and MySQL
 
 ![Turn on Apache and MySQL](images/image2.jpeg)
 
@@ -54,3 +56,10 @@ Search for xampp-control.exe
 While openning xampp, go any browser(eg. Internet Explorer/ Google Chrome..) 
 
 [xampp-remote]: http://localhost/dashboard/
+
+You should see site as below:
+
+#### Click at my PHP admin at top right corner
+
+![localhost] (images/image3.jpeg)
+
