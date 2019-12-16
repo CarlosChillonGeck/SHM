@@ -22,7 +22,7 @@ shm-rpi
         └─── tests
 ```
 
-## Procedure
+## Procedure (Fetching data from sensor node to server)
 
 1. Build a hotspot, join server and sensor node (Rapberry PI) to the hotspot.
 2. Check sensorNode.java file if the IP address is matching the server.
@@ -32,3 +32,15 @@ shm-rpi
 
 **Note: In sensor node, there is a folder "Data" build in local, do not delete that folder.
 folder to store local backup of data in sensor node.
+
+## Procedure setup Database
+
+we neeed to build a database in server to keep track of our data. SQL format is used in our project.
+
+### Install Xampp emulator for SQL
+
+Download Xampp programme from https://www.apachefriends.org/download.html according to your OS.
+
+Normally the progmme folder will store under your C:\, direct to C:\xampp and launch the programme
+
+![Programme Launch](images/image1.jpeg)
