@@ -78,7 +78,7 @@ public class Server {
             OUT[node].flush();
             Thread.sleep(waitingTime0);
         }
-        
+        	
         DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
 		dbAccess.clear(DB_NAME);
 		

@@ -21,7 +21,7 @@ public class SensorNode {
 	static int 		direction;			// [s]
 	static double 	acceleration[];		// [x-acceleration, y-acceleration, z-acceleration][in g]		
 	
-	public static String serverIP = "192.168.137.1"; 
+	public static String serverIP = "192.168.43.202"; 
 	/* Step 1: Define here the IP address of the server (Laptop)
 	in windows: windows key + R -> cmd -> write ipconfig -> copy IPv4 in the serverIP value
 	*/
@@ -83,45 +83,45 @@ public class SensorNode {
     	z_accelerations_s1_bl = base.getBaseLineCorrection(z_accelerations_s1);
     	z_accelerations_s2_bl = base.getBaseLineCorrection(z_accelerations_s2);
         
-//    	// Extending length of vector to a power of 2 (due to FFT)
-//    	powerOf2Extension extendedVector = new powerOf2Extension();
-//    	double [] x_accelerations_s1_bl_ext = extendedVector.nextPow2vector(x_accelerations_s1_bl);
-//    	double [] x_accelerations_s2_bl_ext = extendedVector.nextPow2vector(x_accelerations_s2_bl);
-//    	
-//    	// Saving raw data without filtering and sampling (for comparison reasons)
-//    	long date=System.currentTimeMillis();
-//        FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"FFTData" + Long.toString(date) + ".txt");
-//	    for(int k = 0; k < x_accelerations_s1_bl_ext.length; k++){
-//	    	writer.write(x_accelerations_s1_bl_ext[k] + "\t" +x_accelerations_s2_bl_ext[k] + "\n");
-//	    }
-//	    writer.flush();
-//      	writer.close();
+    	// Extending length of vector to a power of 2 (due to FFT)
+    	powerOf2Extension extendedVector = new powerOf2Extension();
+    	double [] x_accelerations_s1_bl_ext = extendedVector.nextPow2vector(x_accelerations_s1_bl);
+    	double [] x_accelerations_s2_bl_ext = extendedVector.nextPow2vector(x_accelerations_s2_bl);
+    	
+    	// Saving raw data without filtering and sampling (for comparison reasons)
+    	long date=System.currentTimeMillis();
+        FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"FFTData" + Long.toString(date) + ".txt");
+	    for(int k = 0; k < x_accelerations_s1_bl_ext.length; k++){
+	    	writer.write(x_accelerations_s1_bl_ext[k] + "\t" +x_accelerations_s2_bl_ext[k] + "\n");
+	    }
+	    writer.flush();
+      	writer.close();
       	// end writing
     	
         // Calculating the frequency spectrum of the stored data
-//    	double deltaT = 1/(double)samplingRate;
-//        FrequencySpectrum 	fSpec = new FrequencySpectrum(x_accelerations_s1_bl_ext, deltaT);      
-//        FrequencySpectrum 	fSpec2 = new FrequencySpectrum(x_accelerations_s2_bl_ext, deltaT);
-//        // Performing the Peak picking of the frequency spectrum
-//        PeakPicking 		pp 	  = new PeakPicking(numberOfPeaks, fSpec);
-//        PeakPicking 		pp2 	  = new PeakPicking(numberOfPeaks, fSpec2);
-//        int [] 				detectedPeaks = pp.getPeaks();
-//        int [] 				detectedPeaks2 = pp2.getPeaks();
+    	double deltaT = 1/(double)samplingRate;
+        FrequencySpectrum 	fSpec = new FrequencySpectrum(x_accelerations_s1_bl_ext, deltaT);      
+        FrequencySpectrum 	fSpec2 = new FrequencySpectrum(x_accelerations_s2_bl_ext, deltaT);
+        // Performing the Peak picking of the frequency spectrum
+        PeakPicking 		pp 	  = new PeakPicking(numberOfPeaks, fSpec);
+        PeakPicking 		pp2 	  = new PeakPicking(numberOfPeaks, fSpec2);
+        int [] 				detectedPeaks = pp.getPeaks();
+        int [] 				detectedPeaks2 = pp2.getPeaks();
         
         // Extracting and saving frequencies and amplitudes (comparison reasons)
-//        double [] freqs = fSpec.getFrequencies();
-//        double [] amplitudes = fSpec.getAmplitudeSpectrum();
-//    	date=System.currentTimeMillis();
-//        FileWriter writer2 = new FileWriter("/home/pi/Desktop/Data/"+"AmplitudesAndFreq" + Long.toString(date) + ".txt");
-//	    for(int k = 0; k < amplitudes.length; k++){
-//	    	writer2.write(freqs[k] + "\t" +amplitudes[k] + "\n");
-//	    }
-//	    for(int k = 0; k < detectedPeaks.length; k++){
-//	    	writer2.write(detectedPeaks[k] + "\t" +detectedPeaks2[k] + "\n");
-//	    }
-//	    writer2.flush();
-//      	writer2.close();
-//      	// end writing
+        double [] freqs = fSpec.getFrequencies();
+        double [] amplitudes = fSpec.getAmplitudeSpectrum();
+    	date=System.currentTimeMillis();
+        FileWriter writer2 = new FileWriter("/home/pi/Desktop/Data/"+"AmplitudesAndFreq" + Long.toString(date) + ".txt");
+	    for(int k = 0; k < amplitudes.length; k++){
+	    	writer2.write(freqs[k] + "\t" +amplitudes[k] + "\n");
+	    }
+	    for(int k = 0; k < detectedPeaks.length; k++){
+	    	writer2.write(detectedPeaks[k] + "\t" +detectedPeaks2[k] + "\n");
+	    }
+	    writer2.flush();
+      	writer2.close();
+      	// end writing
 
         // transmitting acceleration-data to the server
     	for (int i = 0; i < lengthOfDataset; i++) {
@@ -136,15 +136,15 @@ public class SensorNode {
     		out.flush();
 		}
     	    	
-//    	//transmitting the detected frequencies to the server
-//    	for (int i = 0; i < detectedPeaks.length; i++) {
-//        	double freq1 = (double)detectedPeaks[i]*((double)samplingRate/2)/((double)x_accelerations_s1_bl_ext.length/2);
-//        	double freq2 = (double)detectedPeaks2[i]*((double)samplingRate/2)/((double)x_accelerations_s2_bl_ext.length/2);
-//        	System.out.println(freq1+"\t" + freq2);   
-//    		out.writeDouble(freq1);
-//    		out.writeDouble(freq2);
-//    		out.flush();
-//    	}
+    	//transmitting the detected frequencies to the server
+    	for (int i = 0; i < detectedPeaks.length; i++) {
+        	double freq1 = (double)detectedPeaks[i]*((double)samplingRate/2)/((double)x_accelerations_s1_bl_ext.length/2);
+        	double freq2 = (double)detectedPeaks2[i]*((double)samplingRate/2)/((double)x_accelerations_s2_bl_ext.length/2);
+        	System.out.println(freq1+"\t" + freq2);   
+    		out.writeDouble(freq1);
+    		out.writeDouble(freq2);
+    		out.flush();
+    	}
     	
     	// closing communication
     	s.close();
