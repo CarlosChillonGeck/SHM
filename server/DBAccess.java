@@ -4,8 +4,10 @@ import java.sql.Array;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class DBAccess {
@@ -14,6 +16,10 @@ public class DBAccess {
 		private String driver = "";
 		private Connection connection = null;
 		private Statement statement = null;
+		long date=System.currentTimeMillis();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY_MM_DD_HH_mm");  
+		private String Acc_databaseName = "Acc_" + sdf.format(new Date((long)date));
+		private String Peak_databaseName = "Peak_" + sdf.format(new Date((long)date));
 
 		// constructor
 		// needs information about database URL and specific driver
@@ -26,6 +32,30 @@ public class DBAccess {
 			{
 				connection = DriverManager.getConnection(db_url, "root", "");
 				statement = connection.createStatement();
+				
+				// Create new table
+			    String sql_acc = "CREATE TABLE " +
+			    			Acc_databaseName +
+		                   " (Sensor int, " + 
+		                   " Time TIMESTAMP(3), " + 
+		                   " Acc_x double, " +
+		                   " Acc_y double, " + 
+		                   " Acc_z double)";
+			    
+			 // Create new table
+			    String sql_peak = "CREATE TABLE " +
+			    			Peak_databaseName +
+		                   " (idx INTEGER not NULL," +
+		                   " Sensor int, " + 
+		                   " Peak_x double, " +
+		                   " Peak_y double, " + 
+		                   " Peak_z double)";
+			    
+			    System.out.println("Database: " + Acc_databaseName + " created");
+			    System.out.println("Database: " + Peak_databaseName + " created");
+			    
+			    statement.executeUpdate(sql_acc);
+			    statement.executeUpdate(sql_peak);
 				
 			} catch (SQLException e)
 			{
@@ -51,12 +81,11 @@ public class DBAccess {
 		}
 		
 		// write data into database
-			public void clear(String databaseName) {
+			public void clear() {
 
 				try {
 					// building up connection
 					// here without password
-					
 
 					// change operation: create statement
 					statement = connection.createStatement();
@@ -64,7 +93,7 @@ public class DBAccess {
 					// act operation:
 					// data-sets are wrote into database
 
-					statement.executeUpdate("DELETE FROM " + databaseName);
+					statement.executeUpdate("DELETE FROM " + Acc_databaseName);
 
 					// close connection
 
@@ -75,15 +104,12 @@ public class DBAccess {
 			}
 
 		// write data into database
-		public void insertData(dataFormat dataSet, String databaseName) {
+		public void insertData(dataFormat dataSet) {
 
 			try {
 				// building up connection
 				// here without password
-				
-
-				// change operation: create statement
-				//Statement statement = connection.createStatement();
+			
 
 				// act operation:
 				// data-sets are wrote into database
@@ -92,7 +118,32 @@ public class DBAccess {
 				double accel_y = accelerations[1];
 				double accel_z = accelerations[2];
 				
-				statement.executeUpdate("INSERT INTO " + databaseName + " VALUES (" + dataSet.getSensor()+ ", " + dataSet.getTime() + ", " + accel_x + ", " + accel_y + ", " + accel_z + ")");
+				statement.executeUpdate("INSERT INTO " + Acc_databaseName + " VALUES (" + dataSet.getSensor()+ ", '" + dataSet.getTime() + "', " + accel_x + ", " + accel_y + ", " + accel_z + ")");
+
+				// close connection
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			// catch failure
+		}
+		
+		// write data into database
+		public void insertPeak(dataFormat dataSet) {
+
+			try {
+				// building up connection
+				// here without password
+			
+
+				// act operation:
+				// data-sets are wrote into database
+				double[] peaks = dataSet.getPeak();
+				double peak_x = peaks[0];
+				double peak_y = peaks[1];
+				double peak_z = peaks[2];
+				
+				statement.executeUpdate("INSERT INTO " + Peak_databaseName + " VALUES (" + dataSet.getIndex() + ", " + dataSet.getSensor()+ ", "  + peak_x + ", " + peak_y + ", " + peak_z + ")");
 
 				// close connection
 

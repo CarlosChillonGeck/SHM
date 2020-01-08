@@ -20,14 +20,13 @@ public class Server {
 	public static final String DB_URL = "jdbc:mysql://localhost/accelerometer";
 	public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
 	// always check if the right driver is installed!
-	public static final String DB_NAME = "data";
-	// different parameter for the database
 	
 
 	@SuppressWarnings("unused")
 	public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException{		
 		
-		
+        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
+        
 		// Step 1: define input parameters (Pay attention to number the of nodes)
 		// ===== Input Parameters ==========//
 		int secondsmeasuring = 30;			// [s]        
@@ -39,11 +38,15 @@ public class Server {
 		
 		// Variables related with the acceleration data
 		int lengthOfDataset = samplingFrequency * secondsmeasuring;
-		double timeStamp[] = new double[lengthOfDataset]; // Time Stamp
+		long timeStamp[] = new long[lengthOfDataset]; // Time Stamp
 		double[][] BLAccelerationData = new double[3][lengthOfDataset];
 		double[][] BLAccelerationData2 = new double[3][lengthOfDataset];
-        double[][]	detFrequencies	= new double[numberOfNodes][numberOfPeaks];
-        double[][]	detFrequencies2	= new double[numberOfNodes][numberOfPeaks];		
+        double[][]	detFrequencies_x	= new double[numberOfNodes][numberOfPeaks];
+        double[][]	detFrequencies_x2	= new double[numberOfNodes][numberOfPeaks];
+        double[][]	detFrequencies_y	= new double[numberOfNodes][numberOfPeaks];
+        double[][]	detFrequencies_y2	= new double[numberOfNodes][numberOfPeaks];
+        double[][]	detFrequencies_z	= new double[numberOfNodes][numberOfPeaks];
+        double[][]	detFrequencies_z2	= new double[numberOfNodes][numberOfPeaks];
 
         // Starting communication with the nodes
         System.out.println("Server is running and waiting for connection");
@@ -79,8 +82,6 @@ public class Server {
             Thread.sleep(waitingTime0);
         }
         	
-        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
-		dbAccess.clear(DB_NAME);
 		
         System.out.println("\nInput parameters transmitted\n"
         		+ "--------------------");
@@ -91,24 +92,24 @@ public class Server {
         for(int node = 0; node < numberOfNodes; node++){
         	System.out.println("Waiting acceleration data from node  " + (node + 1));
             for(int i = 0; i < lengthOfDataset; i++){
-            	timeStamp[i] = IN[node].readDouble();
+            	timeStamp[i] = IN[node].readLong();
             	BLAccelerationData[0][i] = IN[node].readDouble(); // reading Acc. data from the nodes
             	BLAccelerationData[1][i] = IN[node].readDouble();
             	BLAccelerationData[2][i] = IN[node].readDouble();
             	
             	double[] data = {1, timeStamp[i], BLAccelerationData[0][i], BLAccelerationData[1][i],BLAccelerationData[2][i]};
-    			dataFormat dataSet = new dataFormat(data);
+    			dataFormat dataSet = new dataFormat(data,true);
     			// write incoming data into database using DBAccess class
-    			dbAccess.insertData(dataSet, DB_NAME);
+    			dbAccess.insertData(dataSet);
     			
             	BLAccelerationData2[0][i] = IN[node].readDouble();
             	BLAccelerationData2[1][i] = IN[node].readDouble();
             	BLAccelerationData2[2][i] = IN[node].readDouble();
             	
             	double[] data2 = {2, timeStamp[i], BLAccelerationData2[0][i], BLAccelerationData2[1][i],BLAccelerationData2[2][i]};
-    			dataFormat dataSet2 = new dataFormat(data2);
+    			dataFormat dataSet2 = new dataFormat(data2,true);
     			// write incoming data into database using DBAccess class
-    			dbAccess.insertData(dataSet2, DB_NAME);
+    			dbAccess.insertData(dataSet2);
     			
             	if(i % 20 == 0) System.out.println(i+1 + "/" + lengthOfDataset);
 	        	}
@@ -120,8 +121,19 @@ public class Server {
         	System.out.println("Waiting frequencies from node  " + (node + 1));
 	        for(int i = 0; i < numberOfPeaks; i++){
 	        	System.out.println("Frequency  " + (i + 1));
-	        	detFrequencies[node][i] = IN[node].readDouble(); // reading Acc. data from the nodes
-	        	detFrequencies2[node][i] = IN[node].readDouble();
+	        	detFrequencies_x[node][i] = IN[node].readDouble(); // reading Acc. data from the nodes
+	        	detFrequencies_y[node][i] = IN[node].readDouble();
+	        	detFrequencies_z[node][i] = IN[node].readDouble();
+	        	double[] data1 = {i+1, 1, detFrequencies_x[node][i], detFrequencies_y[node][i], detFrequencies_z[node][i]};
+	        	dataFormat dataSet1 = new dataFormat(data1,false);
+	        	dbAccess.insertPeak(dataSet1);
+	        	
+	        	detFrequencies_x2[node][i] = IN[node].readDouble();	        	
+	        	detFrequencies_y2[node][i] = IN[node].readDouble();	        	
+	        	detFrequencies_z2[node][i] = IN[node].readDouble();
+	        	double[] data2 = {i+1, 2, detFrequencies_x2[node][i], detFrequencies_y2[node][i], detFrequencies_z2[node][i]};
+	        	dataFormat dataSet2 = new dataFormat(data2,false);
+	        	dbAccess.insertPeak(dataSet2);
 	        	}
         }
         
@@ -150,14 +162,7 @@ public class Server {
       	writer.write("\n \n \n");
       	}
       	
-      	for(int node = 0; node < numberOfNodes; node++){
-	      	for(int k = 0; k < numberOfPeaks; k++){
-	      		writer.write(detFrequencies[node][k]  + "	");
-	      		writer.write(detFrequencies2[node][k]  + "\n");      		
-	      	    }
-      	writer.write("\n \n \n");
-      	}
-      	
+
       	writer.flush();
       	writer.close();
         
@@ -169,8 +174,12 @@ public class Server {
       		System.out.println("\nSensor Node " + (node + 1) );
       		System.out.println("\tSensor 1\tSensor 2");
 	        for (int i = 0; i < numberOfPeaks; i++) {
-	        	System.out.print("Peak " + (i+1) + "\t" + detFrequencies[node][i] + "\t\t");
-				System.out.println(detFrequencies2[node][i]);
+	        	System.out.print("Peak x" + (i+1) + "\t" + detFrequencies_x[node][i] + "\t\t");
+				System.out.println(detFrequencies_x2[node][i]);
+				System.out.print("Peak y" + (i+1) + "\t" + detFrequencies_y[node][i] + "\t\t");
+				System.out.println(detFrequencies_y2[node][i]);
+				System.out.print("Peak z" + (i+1) + "\t" + detFrequencies_z[node][i] + "\t\t");
+				System.out.println(detFrequencies_z2[node][i]);
 			}
       	}
      

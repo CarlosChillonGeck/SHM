@@ -17,7 +17,7 @@ import daq.ADXL345;
  */
 public class nodesDataCollection {
 
-	double[][] getDataCollection(int seconds, int samplingFrequency, int direction) throws IOException, UnsupportedBusNumberException{         
+	long getDataCollection(double[][] accelerations,int seconds, int samplingFrequency, int direction) throws IOException, UnsupportedBusNumberException{         
 		
 		// Input variables
 		int secondsMeasuring = seconds;
@@ -55,15 +55,15 @@ public class nodesDataCollection {
         double[] z_accelerations_s2_raw = new double[lengthOfDatasetRaw];
 
         long[] timeinter = new long[lengthOfDatasetRaw];
-        double timestep = (1000/(double)samplingRate);
-
+        long timestep = (long)(1000/samplingRate);
+        long startTime = 0;
+        
         double[] x_accelerations_s1 = new double[lengthOfDataset];
         double[] x_accelerations_s2 = new double[lengthOfDataset];
         double[] y_accelerations_s1 = new double[lengthOfDataset];
         double[] y_accelerations_s2 = new double[lengthOfDataset];
         double[] z_accelerations_s1 = new double[lengthOfDataset];
         double[] z_accelerations_s2 = new double[lengthOfDataset];
-        double[][] accelerations = new double[7][lengthOfDataset];
         
         // sampling as fast as possible
         int aux = 0;        
@@ -77,22 +77,20 @@ public class nodesDataCollection {
         	y_accelerations_s2_raw[aux] = (double) raw_1d[1]*scalingFactor;
         	z_accelerations_s1_raw[aux] = (double) raw[2]*scalingFactor;
         	z_accelerations_s2_raw[aux] = (double) raw_1d[2]*scalingFactor;
-        	timeinter[aux] = System.nanoTime(); 
+        	timeinter[aux] = System.nanoTime();
+        	
+        	if (aux == 0) startTime = System.currentTimeMillis();
         	aux = aux+1;
  		}
         
-//        // Storing Data in RPI - not necessary in real implementations
-//        long date=System.currentTimeMillis();
-//        FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"RawAcc" + Long.toString(date) + ".txt");
-//	    for(int k = 0; k < aux; k++){
-//	    	writer.write(timeinter[k]+ "\t" + x_accelerations_s1_raw[k] + "\t" +x_accelerations_s2_raw[k]+ "\t" + y_accelerations_s1_raw[k] + "\t" +y_accelerations_s2_raw[k]+ "\t" + z_accelerations_s1_raw[k] + "\t" +z_accelerations_s2_raw[k] + "\n");
-//	    }
-//	    writer.flush();
-//      	writer.close();
-      	
-      	for (int i = 0; i < lengthOfDataset; i++) {
-      		accelerations[0][i] = timestep * i;
-      	}
+        // Storing Data in RPI - not necessary in real implementations
+        long date=System.currentTimeMillis();
+        FileWriter writer = new FileWriter("/home/pi/Desktop/Data/"+"RawAcc" + Long.toString(date) + ".txt");
+	    for(int k = 0; k < aux; k++){
+	    	writer.write(timeinter[k]+ "\t" + x_accelerations_s1_raw[k] + "\t" +x_accelerations_s2_raw[k]+ "\t" + y_accelerations_s1_raw[k] + "\t" +y_accelerations_s2_raw[k]+ "\t" + z_accelerations_s1_raw[k] + "\t" +z_accelerations_s2_raw[k] + "\n");
+	    }
+	    writer.flush();
+      	writer.close();
       	
       	// Re-sampling data to a defined sampling frequency
       	samplingData samplingacc = new samplingData();
@@ -102,15 +100,17 @@ public class nodesDataCollection {
       	y_accelerations_s2 = samplingacc.getSamplingData(y_accelerations_s2_raw, timeinter, samplingRate, aux, lengthOfDataset);
       	z_accelerations_s1 = samplingacc.getSamplingData(z_accelerations_s1_raw, timeinter, samplingRate, aux, lengthOfDataset);
       	z_accelerations_s2 = samplingacc.getSamplingData(z_accelerations_s2_raw, timeinter, samplingRate, aux, lengthOfDataset);
+        
 
-      	// Storing data into a matrix
-      	accelerations[1]=x_accelerations_s1;
-      	accelerations[2]=x_accelerations_s2;
-      	accelerations[3]=y_accelerations_s1;
-      	accelerations[4]=y_accelerations_s2;
-      	accelerations[5]=z_accelerations_s1;
-      	accelerations[6]=z_accelerations_s2;
       	
-		return accelerations;
+      	// Storing data into a matrix
+      	accelerations[0]=x_accelerations_s1;
+      	accelerations[1]=x_accelerations_s2;
+      	accelerations[2]=y_accelerations_s1;
+      	accelerations[3]=y_accelerations_s2;
+      	accelerations[4]=z_accelerations_s1;
+      	accelerations[5]=z_accelerations_s2;
+      	
+      	return startTime;
 		}	
 }
