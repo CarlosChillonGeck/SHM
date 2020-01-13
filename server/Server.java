@@ -1,9 +1,12 @@
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.util.Date;
+import java.util.Scanner;
 
 
 /* This part of the code runs into the server (laptop)
@@ -19,14 +22,14 @@ public class Server {
 	
 	public static final String DB_URL = "jdbc:mysql://localhost/accelerometer";
 	public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
+	public static String IPAddress = "192.168.1.102:8080";
 	// always check if the right driver is installed!
 	
 
 	@SuppressWarnings("unused")
 	public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException{		
+		Phyphox.clear(IPAddress);
 		
-        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER);
-        
 		// Step 1: define input parameters (Pay attention to number the of nodes)
 		// ===== Input Parameters ==========//
 		int secondsmeasuring = 30;			// [s]        
@@ -68,20 +71,30 @@ public class Server {
         }		
         
         // Sending input parameters to the sensor nodes
+        System.out.println("Press key in Experiment Condition:");
+        Scanner sc = new Scanner(System.in);
+        String condition = sc.nextLine();
+        
+        DBAccess dbAccess = new DBAccess(DB_URL, DB_DRIVER, condition);
+        
+        // Sending input parameters to the sensor nodes
         System.out.println("Press enter for sending parameters to nodes");
         System.in.read();
-
+        
+    	Phyphox.start(IPAddress);
+    	long Phyphox_startTime = System.currentTimeMillis();
+    	
         for(int node = 0; node < numberOfNodes; node++){
-        	waitingTime=(numberOfNodes-node)*waitingTime0;
+        	//waitingTime=(numberOfNodes-node)*waitingTime0;
     		OUT[node].writeInt(samplingFrequency);
     		OUT[node].writeInt(numberOfPeaks);
     		OUT[node].writeInt(secondsmeasuring);
     		OUT[node].writeInt(direction);
     		OUT[node].writeLong(waitingTime);
             OUT[node].flush();
-            Thread.sleep(waitingTime0);
+            //Thread.sleep(waitingTime0);
         }
-        	
+        
 		
         System.out.println("\nInput parameters transmitted\n"
         		+ "--------------------");
@@ -137,34 +150,41 @@ public class Server {
 	        	}
         }
         
+        Phyphox.save(IPAddress);
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS");
+        String phy_startTime = sdf.format(new Date(Phyphox_startTime));
+        System.out.println("Phyphox start time: " + phy_startTime);
+        
         // Storing data into a file in ./Results/
-        long date=System.currentTimeMillis();
-      	FileWriter writer = new FileWriter(rawDataPath + Long.toString(date) + "_Acc.csv");
-      	writer.write("Time Stamp,");
-      	writer.write("Sensor 1_X,");
-      	writer.write("Sensor 1_Y,");
-      	writer.write("Sensor 1_Z,");
-      	writer.write("Sensor 2_X,");
-      	writer.write("Sensor 2_Y,");
-      	writer.write("Sensor 2_Z,");
+      	FileWriter writer = new FileWriter(rawDataPath + dbAccess.getAccName() + ".csv");
+      	writer.write("Time Stamp" + "\t");
+      	writer.write("Sensor 1_X" + "\t");
+      	writer.write("Sensor 1_Y" + "\t");
+      	writer.write("Sensor 1_Z" + "\t");
+      	writer.write("Sensor 2_X" + "\t");
+      	writer.write("Sensor 2_Y" + "\t");
+      	writer.write("Sensor 2_Z");
       	writer.write("\n");
-      			
+      	
+      	SimpleDateFormat st = new SimpleDateFormat("HH:mm:ss.SSS");
+      	
       	for(int node = 0; node < numberOfNodes; node++){
 	      	for(int k = 0; k < lengthOfDataset; k++){
-	      		writer.write(timeStamp[k]  + ",");
-	      		writer.write(BLAccelerationData[0][k]  + ",");
-	      		writer.write(BLAccelerationData[1][k]  + ",");
-	      		writer.write(BLAccelerationData[2][k]  + ",");
-	      		writer.write(BLAccelerationData2[0][k]  + ",");
-	      		writer.write(BLAccelerationData2[1][k]  + ",");
+	      		String t = st.format(new Date(timeStamp[k]));
+	      		writer.write( t + "\t");
+	      		writer.write(BLAccelerationData[0][k]  + "\t");
+	      		writer.write(BLAccelerationData[1][k]  + "\t");
+	      		writer.write(BLAccelerationData[2][k]  + "\t");
+	      		writer.write(BLAccelerationData2[0][k]  + "\t");
+	      		writer.write(BLAccelerationData2[1][k]  + "\t");
 	      		writer.write(BLAccelerationData2[2][k]  + "\n");      		
 	      	    }
       	writer.write("\n \n \n");
       	}
       	
-
       	writer.flush();
       	writer.close();
+      	
         
       	// Final output of the console
         System.out.println("\nAcceleration-data written into " + rawDataPath);
@@ -182,7 +202,8 @@ public class Server {
 				System.out.println(detFrequencies_z2[node][i]);
 			}
       	}
-     
+      	
+      	System.out.println("Phyphox_" + dbAccess.getAccName() + ".csv");
         for(int node = 0; node < numberOfNodes; node++){
         	IN[node].close();
             OUT[node].close();

@@ -18,13 +18,13 @@ public class DBAccess {
 		private Statement statement = null;
 		long date=System.currentTimeMillis();
 		SimpleDateFormat sdf = new SimpleDateFormat("YYYY_MM_DD_HH_mm");  
-		private String Acc_databaseName = "Acc_" + sdf.format(new Date((long)date));
-		private String Peak_databaseName = "Peak_" + sdf.format(new Date((long)date));
+		private String Acc_databaseName = "_Acc_" + sdf.format(new Date((long)date));
+		private String Peak_databaseName = "_Peak_" + sdf.format(new Date((long)date));
 
 		// constructor
 		// needs information about database URL and specific driver
 		// driver is loaded instantly after initiate the DBAccess-object
-		public DBAccess(String db_url, String driver) {
+		public DBAccess(String db_url, String driver, String condition) {
 			this.db_url = db_url;
 			this.driver = driver;
 			loadDriver();
@@ -33,6 +33,8 @@ public class DBAccess {
 				connection = DriverManager.getConnection(db_url, "root", "");
 				statement = connection.createStatement();
 				
+				Acc_databaseName = condition + Acc_databaseName;
+				Peak_databaseName = condition + Peak_databaseName;
 				// Create new table
 			    String sql_acc = "CREATE TABLE " +
 			    			Acc_databaseName +
@@ -151,5 +153,13 @@ public class DBAccess {
 				e.printStackTrace();
 			}
 			// catch failure
+		}
+		
+		public String getAccName() {
+			return this.Acc_databaseName;
+		}
+		
+		public String getPeakName() {
+			return this.Peak_databaseName;
 		}
 }

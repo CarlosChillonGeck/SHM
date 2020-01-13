@@ -79,7 +79,9 @@ public class nodesDataCollection {
         	z_accelerations_s2_raw[aux] = (double) raw_1d[2]*scalingFactor;
         	timeinter[aux] = System.nanoTime();
         	
-        	if (aux == 0) startTime = System.currentTimeMillis();
+        	if (aux == 0) { 
+        		startTime = System.currentTimeMillis();
+        	}
         	aux = aux+1;
  		}
         
