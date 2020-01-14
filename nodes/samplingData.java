@@ -20,7 +20,7 @@ public class samplingData {
 		double acc1 = 0;
 		double[] timemili= new double[vectorlength];	
 				
-		double timestep = (1000/(double)sampling);
+		double timestep = (1000/(double)sampling); // in miliseconds 100 Hz = 0.01s => 10ms
 		//int totalpoints = (int)(accraw[vectorlength]/timestep);
 		int totalpoints = lengthOfDataset;
 		

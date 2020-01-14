@@ -115,28 +115,28 @@ public class SensorNode {
         int [] 				detectedPeaks_z = pp_z.getPeaks();
         int [] 				detectedPeaks_z2 = pp_z2.getPeaks();
         
-        // Extracting and saving frequencies and amplitudes (comparison reasons)
-        double [] freqs_x = fSpec_x.getFrequencies();
-        double [] amplitudes_x = fSpec_x.getAmplitudeSpectrum();
-        double [] freqs_y = fSpec_y.getFrequencies();
-        double [] amplitudes_y = fSpec_y.getAmplitudeSpectrum();
-        double [] freqs_z = fSpec_z.getFrequencies();
-        double [] amplitudes_z = fSpec_z.getAmplitudeSpectrum();
+//        // Extracting and saving frequencies and amplitudes (comparison reasons)
+//        double [] freqs_x = fSpec_x.getFrequencies();
+//        double [] amplitudes_x = fSpec_x.getAmplitudeSpectrum();
+//        double [] freqs_y = fSpec_y.getFrequencies();
+//        double [] amplitudes_y = fSpec_y.getAmplitudeSpectrum();
+//        double [] freqs_z = fSpec_z.getFrequencies();
+//        double [] amplitudes_z = fSpec_z.getAmplitudeSpectrum();
         
         long date=System.currentTimeMillis();
     	date=System.currentTimeMillis();
-        FileWriter writer2 = new FileWriter("/home/pi/Desktop/Data/"+"AmplitudesAndFreq" + Long.toString(date) + ".txt");
-        writer2.write("Frequency x"+ "\t" + "Amplitude x" + "\t" + "Frequency y" + "\t" + "Amplitude y" + "\t" + "Frequency z"+ "\t" + "Amplitude z" + "\n");
-        for(int k = 0; k < amplitudes_x.length; k++){
-	    	writer2.write(freqs_x[k] + "\t" +amplitudes_x[k] + "\t" + freqs_y[k] + "\t" +amplitudes_y[k] + "\t" + freqs_z[k] + "\t" +amplitudes_z[k] + "\n");
-	    }
-        writer2.write("Detected Peak x S1"+ "\t" + "Detected Peak x S2" + "\t" + "Detected Peak y S1"+ "\t" + "Detected Peak y S2" + "\n" + "Detected Peak z S1"+ "\t" + "Detected Peak z S2" + "\n");
-	    for(int k = 0; k < detectedPeaks_x.length; k++){
-	    	writer2.write(detectedPeaks_x[k] + "\t" +detectedPeaks_x2[k] + "\t" + detectedPeaks_y[k] + "\t" +detectedPeaks_y2[k] + "\t" + detectedPeaks_z[k] + "\t" +detectedPeaks_z2[k] + "\n");
-	    }
-	    writer2.flush();
-	    writer2.close();
-//      // end writing
+//        FileWriter writer2 = new FileWriter("/home/pi/Desktop/Data/"+"AmplitudesAndFreq" + Long.toString(date) + ".txt");
+//        writer2.write("Frequency x"+ "\t" + "Amplitude x" + "\t" + "Frequency y" + "\t" + "Amplitude y" + "\t" + "Frequency z"+ "\t" + "Amplitude z" + "\n");
+//        for(int k = 0; k < amplitudes_x.length; k++){
+//	    	writer2.write(freqs_x[k] + "\t" +amplitudes_x[k] + "\t" + freqs_y[k] + "\t" +amplitudes_y[k] + "\t" + freqs_z[k] + "\t" +amplitudes_z[k] + "\n");
+//	    }
+//        writer2.write("Detected Peak x S1"+ "\t" + "Detected Peak x S2" + "\t" + "Detected Peak y S1"+ "\t" + "Detected Peak y S2" + "\n" + "Detected Peak z S1"+ "\t" + "Detected Peak z S2" + "\n");
+//	    for(int k = 0; k < detectedPeaks_x.length; k++){
+//	    	writer2.write(detectedPeaks_x[k] + "\t" +detectedPeaks_x2[k] + "\t" + detectedPeaks_y[k] + "\t" +detectedPeaks_y2[k] + "\t" + detectedPeaks_z[k] + "\t" +detectedPeaks_z2[k] + "\n");
+//	    }
+//	    writer2.flush();
+//	    writer2.close();
+////      // end writing
     	
     	// Create TimeStamp
     	for (int i = 0; i < lengthOfDataset; i++) {
