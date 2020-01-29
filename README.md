@@ -13,8 +13,9 @@ shm-rpi
 │            └─── *.jar
 │
 └─── server
-│       │ Server.java
-│       │ TestSuit.java
+│       │ Server.java (Main Programm)
+│       │ Database with Xampp in SQL based
+|       └─Phyphox Data Processing
 │
 └─── interface
         └─── rsc
@@ -42,6 +43,9 @@ we neeed to build a database in server to keep track of our data. SQL format is 
 Download Xampp programme from https://www.apachefriends.org/download.html according to your OS.
 
 Normally the progmme folder will store under your C:\, direct to C:\xampp and launch the programme
+
+#### Launch xampp-start.exe
+Launch start up file for Xampp
 
 #### Search for xampp-control.exe
 
@@ -74,10 +78,10 @@ Under the table, build column name as shown:
 
 ![database 2](images/image5.jpeg)
 
+--------------------------Under Developing-----------------------------------
 ## Visualise the data
 
 Copy all files under [`Xampp/`](Xampp/) into C:\xampp\htdocs\website as shown:
-
 
 ![html file](images/image6.jpeg)
 
