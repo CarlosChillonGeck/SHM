@@ -1,4 +1,7 @@
 import java.net.Socket;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -6,6 +9,7 @@ import java.net.ServerSocket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Scanner;
 
 
@@ -22,13 +26,26 @@ public class Server {
 	
 	public static final String DB_URL = "jdbc:mysql://localhost/accelerometer";
 	public static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-	public static String IPAddress = "192.168.1.102:8080";
+	// Please change IP according to Phyphox data
+	public static String IPAddress1 = "192.168.61.248:8080"; // Phone's Ip from Phyphonx 1
+	public static String IPAddress2 = "192.168.61.145:8080"; // Phone's Ip from Phyphonx 2
+	
 	// always check if the right driver is installed!
+	
+	// File write format
+	public static String separator = "\t"; //The separator, typically "," or "\t"
+    public static char decimalPoint = '.'; //The separator, typically "," or "\t"
 	
 
 	@SuppressWarnings("unused")
 	public static void main(String args[]) throws IOException, ClassNotFoundException, InterruptedException{		
-		Phyphox.clear(IPAddress);
+		Phyphox.clear(IPAddress1);
+		Phyphox.clear(IPAddress2);
+		
+		long date=System.currentTimeMillis();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY_MM_DD_HH_mm"); 
+		
+		
 		
 		// Step 1: define input parameters (Pay attention to number the of nodes)
 		// ===== Input Parameters ==========//
@@ -81,7 +98,9 @@ public class Server {
         System.out.println("Press enter for sending parameters to nodes");
         System.in.read();
         
-    	Phyphox.start(IPAddress);
+    	Phyphox.start(IPAddress1);
+    	Phyphox.start(IPAddress2);
+    	
     	long Phyphox_startTime = System.currentTimeMillis();
     	
         for(int node = 0; node < numberOfNodes; node++){
@@ -115,6 +134,7 @@ public class Server {
     			// write incoming data into database using DBAccess class
     			dbAccess.insertData(dataSet);
     			
+
             	BLAccelerationData2[0][i] = IN[node].readDouble();
             	BLAccelerationData2[1][i] = IN[node].readDouble();
             	BLAccelerationData2[2][i] = IN[node].readDouble();
@@ -150,11 +170,15 @@ public class Server {
 	        	}
         }
         
-        Phyphox.save(IPAddress);
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS");
-        String phy_startTime = sdf.format(new Date(Phyphox_startTime));
+        Phyphox.save(IPAddress1);
+        Phyphox.save(IPAddress2);
+        
+        SimpleDateFormat sd = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS");
+        String phy_startTime = sd.format(new Date(Phyphox_startTime));
         System.out.println("Phyphox start time: " + phy_startTime);
         
+        // Create csv files for Acceleration for Local storage
+        //------------------------------------------------------------------------------------------
         // Storing data into a file in ./Results/
       	FileWriter writer = new FileWriter(rawDataPath + dbAccess.getAccName() + ".csv");
       	writer.write("Time Stamp" + "\t");
@@ -168,23 +192,30 @@ public class Server {
       	
       	SimpleDateFormat st = new SimpleDateFormat("HH:mm:ss.SSS");
       	
+      	DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
+        format.applyPattern("0.000000000E0");
+        DecimalFormatSymbols dfs = format.getDecimalFormatSymbols();
+        dfs.setDecimalSeparator(decimalPoint);
+        format.setDecimalFormatSymbols(dfs);
+        format.setGroupingUsed(false);
+      	
       	for(int node = 0; node < numberOfNodes; node++){
 	      	for(int k = 0; k < lengthOfDataset; k++){
 	      		String t = st.format(new Date(timeStamp[k]));
-	      		writer.write( t + "\t");
-	      		writer.write(BLAccelerationData[0][k]  + "\t");
-	      		writer.write(BLAccelerationData[1][k]  + "\t");
-	      		writer.write(BLAccelerationData[2][k]  + "\t");
-	      		writer.write(BLAccelerationData2[0][k]  + "\t");
-	      		writer.write(BLAccelerationData2[1][k]  + "\t");
-	      		writer.write(BLAccelerationData2[2][k]  + "\n");      		
+	      		writer.write( t + separator);
+	      		writer.write(format.format(BLAccelerationData[0][k])  + separator);
+	      		writer.write(format.format(BLAccelerationData[1][k])  + separator);
+	      		writer.write(format.format(BLAccelerationData[2][k])  + separator);
+	      		writer.write(format.format(BLAccelerationData2[0][k])  + separator);
+	      		writer.write(format.format(BLAccelerationData2[1][k])  + separator);
+	      		writer.write(format.format(BLAccelerationData2[2][k])  + "\n");      		
 	      	    }
       	writer.write("\n \n \n");
       	}
       	
       	writer.flush();
       	writer.close();
-      	
+      	//--------------------------------------------------------------------------------------------
         
       	// Final output of the console
         System.out.println("\nAcceleration-data written into " + rawDataPath);
@@ -194,22 +225,34 @@ public class Server {
       		System.out.println("\nSensor Node " + (node + 1) );
       		System.out.println("\tSensor 1\tSensor 2");
 	        for (int i = 0; i < numberOfPeaks; i++) {
-	        	System.out.print("Peak x" + (i+1) + "\t" + detFrequencies_x[node][i] + "\t\t");
+	        	System.out.print("Peak x" + (i+1) + "\t" + format.format(detFrequencies_x[node][i]) + separator + separator);
 				System.out.println(detFrequencies_x2[node][i]);
-				System.out.print("Peak y" + (i+1) + "\t" + detFrequencies_y[node][i] + "\t\t");
+				System.out.print("Peak y" + (i+1) + "\t" + format.format(detFrequencies_y[node][i]) + separator + separator);
 				System.out.println(detFrequencies_y2[node][i]);
-				System.out.print("Peak z" + (i+1) + "\t" + detFrequencies_z[node][i] + "\t\t");
+				System.out.print("Peak z" + (i+1) + "\t" + format.format(detFrequencies_z[node][i]) + separator + separator);
 				System.out.println(detFrequencies_z2[node][i]);
 			}
       	}
       	
-      	System.out.println("Phyphox_" + dbAccess.getAccName() + ".csv");
         for(int node = 0; node < numberOfNodes; node++){
         	IN[node].close();
             OUT[node].close();
             ss[node].close(); 
       	    }
+        //-------------------------------------------------------------------------------------------
+        // Saving all files in Phyphox in csv
+      	String PhyphoxName = "Phyphox_" + dbAccess.getAccName();
+      	System.out.println(PhyphoxName + "_Phone 1"+ ".csv");
+      	System.out.println(PhyphoxName + "_Phone 2"+ ".csv");
+      	
+        // Sending input if Saved is done
+        System.out.println("Press enter if Saving is Done");
+        Scanner sc1 = new Scanner(System.in);
+        String unused = sc1.nextLine();
+        System.in.read();
         
+        PhyphoxData pData1 = new PhyphoxData(PhyphoxName + "_Phone 1", numberOfPeaks, dbAccess, 1);
+        PhyphoxData pData2 = new PhyphoxData(PhyphoxName + "_Phone 2", numberOfPeaks, dbAccess, 2);
         
 	}
 

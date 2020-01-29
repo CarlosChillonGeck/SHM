@@ -1,5 +1,9 @@
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class dataFormat {
 
@@ -7,49 +11,60 @@ public class dataFormat {
 
 	private String time;
 	private int sensor;
-	private double accel_x;
-	private double accel_y;
-	private double accel_z;
-	private double peak_x;
-	private double peak_y;
-	private double peak_z;
+	private String accel_x;
+	private String accel_y;
+	private String accel_z;
+	private String peak_x;
+	private String peak_y;
+	private String peak_z;
 	private int index;
-	SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS");    
+	SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-DD HH:mm:ss.SSS");
+
+	DecimalFormat format = (DecimalFormat) NumberFormat.getInstance(Locale.ENGLISH);
+	public static char decimalPoint = '.'; //The separator, typically "," or "\t"
+
 
 
 	public dataFormat(double[] data, boolean Acc) {
+
+		format.applyPattern("0.000000000E0");
+		DecimalFormatSymbols dfs = format.getDecimalFormatSymbols();
+		dfs.setDecimalSeparator(decimalPoint);
+		format.setDecimalFormatSymbols(dfs);
+		format.setGroupingUsed(false);
+
 		if (Acc) {
 			this.sensor = (int)data[0];
 			this.time = sdf.format(new Date((long)data[1]));
-			this.accel_x = data[2];
-			this.accel_y = data[3];
-			this.accel_z = data[4];
+			this.accel_x = format.format(data[2]);
+			this.accel_y = format.format(data[3]);
+			this.accel_z = format.format(data[4]);
 		}
 		else {
 			this.index = (int)data[0];
 			this.sensor = (int)data[1];
-			this.peak_x = data[2];
-			this.peak_y = data[3];
-			this.peak_z = data[4];
+			this.peak_x = format.format(data[2]);
+			this.peak_y = format.format(data[3]);
+			this.peak_z = format.format(data[4]);
 		}
 	}
 
-	public double[] getAcceleration() {
-		double[] accelerations = new double[3];
+	public String[] getAcceleration() {
+		String[] accelerations = new String[3];
 		accelerations[0] = this.accel_x;
 		accelerations[1] = this.accel_y;
 		accelerations[2] = this.accel_z;
 		return accelerations;
 	}
-	
-	public double[] getPeak() {
-		double[] peaks = new double[3];
+
+	public String[] getPeak() {
+		String[] peaks = new String[3];
 		peaks[0] = this.peak_x;
 		peaks[1] = this.peak_y;
 		peaks[2] = this.peak_z;
 		return peaks;
 	}
-	
+
 	public String getTime() {
 		return this.time;
 	}
@@ -57,7 +72,7 @@ public class dataFormat {
 	public double getSensor() {
 		return this.sensor;
 	}
-	
+
 	public int getIndex() {
 		return this.index;
 	}

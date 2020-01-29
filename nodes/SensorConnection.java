@@ -50,7 +50,7 @@ public class SensorConnection {
 	        }
 			
 			
-			sensor.writeRange(ADXL345.ADXL345_RANGE_4G);
+			sensor.writeRange(ADXL345.ADXL345_RANGE_2G);
 	        sensor.writeFullResolution(true);
 	        sensor.writeRate(ADXL345.ADXL345_RATE_100);
 	        scalingFactor = sensor.getScalingFactor();
