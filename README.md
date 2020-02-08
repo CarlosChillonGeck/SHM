@@ -1,7 +1,7 @@
 # SHM WS 2019
 
 ## Programme Sequence
-### Note: Database should be build before execute java programme.
+### Note: Database should be build before executing java programme.
 ```
 1. Sensor Node send out [Acceleration x,y,z] , [Peak x,y,z]
 2. Server receive [Acceleration x,y,z] , [Peak x,y,z] and store in Database
@@ -15,16 +15,16 @@
 
 1. Download Phyphox application from App Store
 2. Refer to https://phyphox.org/remote-control/ to setup remote mode of the Phyphox Experiment
-3. Use the "Time run" feature to setup the duration of experiment
+3. Use the "Time run" feature to setup the duration of the experiment
 4. Note the IP address of the remote link and update the IP over Phone IP address declared in Server.java
-5. The maximum allow attachable phone is 2, but with slight modification of adding in new IP address allow more phone to be attached
+5. The maximum number of attachable phones is 2, but with a slight modification (adding a new IP address) more phones can be attached
 
 ## Procedure (Fetching data from sensor node to server and Phone data fetching)
 
 1. Build a hotspot, join server and sensor node (Rapberry PI) to the hotspot.
-2. Check sensorNode.java file if the IP address is matching the server.
-3. Launch programme in sensor node, red Led indicate programme from Thumbdrive executed.
-4. Execute the Server.java programme. Hit enter in console.
+2. Check sensorNode.java file. IP address should match the server's address.
+3. Launch programme in sensor node, red Led indicates that the programme from Thumbdrive is executed.
+4. Execute the Server.java programme. Hit enter in console, as requested by the Java application to start sending data form accelerometers to the sensor node, and finally forwarded to the server.
 5. The result should be available under Result/. folder in csv format.
 6. The programme will pause and ensure the user to save Phyphox data file
 7. Copy the designated filename printed in console for the file naming of Phyphox data
@@ -41,7 +41,7 @@ we neeed to build a database in server to keep track of our data. SQL format is 
 
 Download Xampp programme from https://www.apachefriends.org/download.html according to your OS.
 
-Normally the progmme folder will store under your C:\, direct to C:\xampp and launch the programme
+Normally, the programme folder will be stored under C:\. Go to C:\xampp and launch the programme.
 
 #### Launch xampp-start.exe
 Launch start up file for Xampp
@@ -56,22 +56,22 @@ Launch start up file for Xampp
 
 ### View Database
 
-While openning xampp, go any browser(eg. Internet Explorer/ Google Chrome..) 
+While openning xampp, go to any browser(eg. Internet Explorer/ Google Chrome..) 
 
 #### xampp-remote link: http://localhost/dashboard/
 
-You should see site as below:
+You should see the site as below:
 
 #### Click at my PHP admin at top right corner
 
 ![localhost](images/image3.jpeg)
 
 #### Build Database
-1. Build a new database should be built. (By Default, the Java Database Build name is "accelerometer"
+1. A new database should be built. (By Default, the Java Database Build name is "accelerometer"
 2. Under the database, different tables will be stored.
-3. Java application will automatically build table for different type of data
+3. Java application will automatically build tables for different types of data
 
-#####The naming convention for different experiment is as follow
+#####The naming convention for the different experiments is as follow
 1. For sensor node Acceleration data: "Experiment condition"+ Acc + File written Date and Time
 2. For sensor node Peak data: "Experiment condition"+ Peak + File written Date and Time
 3. For phone Acceleration data: "Experiment condition"+ Phyphox_Acc + File written Date and Time
@@ -80,15 +80,15 @@ You should see site as below:
 as shown below:
 ![database](images/image4.jpeg)
 
-Under the table, the build column style will as below:
+Under the table, the build column style will look as below:
 
 ![database 2](images/image5.jpeg)
 
-##------------------------------------Under Developing--------------------------------------------------------
-## Visualise the data
+##------------------------------------Under development--------------------------------------------------------
+## Visualize the data
 
 Copy all files under [`Xampp/`](Xampp/) into C:\xampp\htdocs\website as shown:
 
 ![html file](images/image6.jpeg)
 
-#### Finally, launch test.htm 
+#### Finally, launch test.htm
