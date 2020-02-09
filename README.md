@@ -1,7 +1,7 @@
 # SHM WS 2019
 
 ## Programme Sequence
-### Note: Database should be build before executing java programme.
+### Note: Database should be built before executing Java programme.
 ```
 1. Sensor Node send out [Acceleration x,y,z] , [Peak x,y,z]
 2. Server receive [Acceleration x,y,z] , [Peak x,y,z] and store in Database
@@ -19,7 +19,7 @@
 4. Note the IP address of the remote link and update the IP over Phone IP address declared in Server.java
 5. The maximum number of attachable phones is 2, but with a slight modification (adding a new IP address) more phones can be attached
 
-## Procedure (Fetching data from sensor node to server and Phone data fetching)
+## Procedure (Fetching data from sensor node to server, and Phone data fetching)
 
 1. Build a hotspot, join server and sensor node (Rapberry PI) to the hotspot.
 2. Check sensorNode.java file. IP address should match the server's address.
@@ -71,7 +71,7 @@ You should see the site as below:
 2. Under the database, different tables will be stored.
 3. Java application will automatically build tables for different types of data
 
-#####The naming convention for the different experiments is as follow
+#####The naming convention for the different experiments is as follows:
 1. For sensor node Acceleration data: "Experiment condition"+ Acc + File written Date and Time
 2. For sensor node Peak data: "Experiment condition"+ Peak + File written Date and Time
 3. For phone Acceleration data: "Experiment condition"+ Phyphox_Acc + File written Date and Time
